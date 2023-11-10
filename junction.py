@@ -8,21 +8,30 @@ def load_data(file_path):
         return json.load(file)
 
 def process_eye_movement(dataset):
-    """Process eye movement data."""
+    """Process eye movement data and extract timestamps."""
     left_eye_signals = []
     right_eye_signals = []
+    timestamps = []  # List to hold timestamps
 
     for data_entry in dataset:
         for afe_entry in data_entry.get('afe', []):
-            if afe_entry.get('t') == 'L':
-                left_eye_signals.append(afe_entry['m'][0][:6])
-            elif afe_entry.get('t') == 'R':
-                right_eye_signals.append(afe_entry['m'][0][:6])
+            if 'm' in afe_entry and 'i' in afe_entry and afe_entry['m'][0][:6]:
+                # Extract the timestamp, convert from microseconds to seconds
+                timestamp = afe_entry['i'][1] / 1_000_000.0
+                timestamps.append(timestamp)
 
-    avg_left_eye = np.mean(left_eye_signals, axis=0) if left_eye_signals else None
-    avg_right_eye = np.mean(right_eye_signals, axis=0) if right_eye_signals else None
+                if afe_entry.get('t') == 'L':
+                    left_eye_signals.append(afe_entry['m'][0][:6])
+                elif afe_entry.get('t') == 'R':
+                    right_eye_signals.append(afe_entry['m'][0][:6])
 
-    return avg_left_eye, avg_right_eye
+    # Convert to numpy arrays
+    left_eye_signals = np.array(left_eye_signals)
+    right_eye_signals = np.array(right_eye_signals)
+    timestamps = np.array(timestamps)
+
+    return left_eye_signals, right_eye_signals, timestamps
+
 
 def calculate_average_heart_rate(heart_data):
     """Calculate the average heart rate."""
@@ -69,16 +78,21 @@ def process_scenario(scenario_path):
 
 def plot_comparison(driving, indoor, walking, title):
     scenarios = ['Driving', 'Indoor', 'Walking']
-    data = [driving, indoor, walking]
+    plt.figure(figsize=(15, 5))
 
-    plt.figure(figsize=(10, 5))
-    for i, scenario_data in enumerate(data):
+    for i, scenario_data in enumerate([driving, indoor, walking]):
+        left_eye_signals, right_eye_signals, timestamps = scenario_data
         plt.subplot(1, 3, i + 1)
-        if scenario_data is not None:
-            plt.plot(scenario_data, label=scenarios[i])
-        plt.title(f"{title} - {scenarios[i]}")
-        plt.legend()
+        if left_eye_signals is not None and timestamps is not None:
+            plt.plot(timestamps, left_eye_signals[:, 0], label=f'{scenarios[i]} Signal 1')  # Plotting only the first signal
+            plt.xlabel('Time (seconds)')
+            plt.ylabel('Signal Value')
+            plt.title(f"{title} - {scenarios[i]}")
+            plt.legend()
+
+    plt.tight_layout()
     plt.show()
+
 
 # Process each scenario
 driving_results = process_scenario('Driving_Scenario')
@@ -86,10 +100,7 @@ indoor_results = process_scenario('Indoor_Scenario')
 walking_results = process_scenario('Walking_Scenario')
 
 # Plot comparisons
+##This will give you plots for each scenario that show how the first signal from the left eye movement data changes over time. Remember to replace the scenario folder names with the correct paths to your data files.
+
 plot_comparison(driving_results[0], indoor_results[0], walking_results[0], 'Eye Movement')
-plot_comparison(driving_results[1], indoor_results[1], walking_results[1], 'Heart Rate')
-plot_comparison(driving_results[2], indoor_results[2], walking_results[2], 'Ambient Light')
-plot_comparison([driving_results[3]['avg_x'], driving_results[3]['avg_y'], driving_results[3]['avg_z']], 
-                [indoor_results[3]['avg_x'], indoor_results[3]['avg_y'], indoor_results[3]['avg_z']], 
-                [walking_results[3]['avg_x'], walking_results[3]['avg_y'], walking_results[3]['avg_z']], 
-                'IMU Data')
+
