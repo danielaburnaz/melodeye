@@ -6,8 +6,10 @@ const left = document.getElementById("leftEye");
 const right = document.getElementById("rightEye");
 const aux = document.getElementById("aux");
 const hr = document.getElementById("heartRate");
+const imu = document.getElementById("imu");
 
-const afe = await fetch("/AFE.json").then((res) => res.json());
+const afe = await fetch("/2/AFE.json").then((res) => res.json());
+const imuData = await fetch("/2/IMU.json").then((res) => res.json());
 
 function eyeData(eye: number, name: string) {
   return [0, 1, 2, 3, 4, 5].map((i) => {
@@ -60,8 +62,6 @@ let heartRate = [
   y: entry.y,
 }));
 
-console.log(heartRate);
-
 new Chart(left as any, {
   type: "line",
   data: {
@@ -100,6 +100,45 @@ new Chart(aux as any, {
   type: "line",
   data: {
     datasets: [...auxData()],
+  },
+  options: {
+    scales: {
+      x: {
+        type: "timeseries",
+        time: {
+          unit: "second",
+        },
+      },
+    },
+  },
+});
+
+new Chart(imu as any, {
+  type: "line",
+  data: {
+    datasets: [
+      {
+        label: `Accelerometer X`,
+        data: imuData.map((entry) => ({
+          x: fromUnixTime(Math.floor(entry.i[1] / 1000000)),
+          y: entry.v[0],
+        })),
+      },
+      {
+        label: `Accelerometer Y`,
+        data: imuData.map((entry) => ({
+          x: fromUnixTime(Math.floor(entry.i[1] / 1000000)),
+          y: entry.v[1],
+        })),
+      },
+      {
+        label: `Accelerometer Z`,
+        data: imuData.map((entry) => ({
+          x: fromUnixTime(Math.floor(entry.i[1] / 1000000)),
+          y: entry.v[2],
+        })),
+      },
+    ],
   },
   options: {
     scales: {

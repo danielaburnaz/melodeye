@@ -18976,7 +18976,9 @@ var left = document.getElementById("leftEye");
 var right = document.getElementById("rightEye");
 var aux = document.getElementById("aux");
 var hr = document.getElementById("heartRate");
-var afe = await fetch("/AFE.json").then((res) => res.json());
+var imu = document.getElementById("imu");
+var afe = await fetch("/2/AFE.json").then((res) => res.json());
+var imuData = await fetch("/2/IMU.json").then((res) => res.json());
 var heartRate = [
   { x: "2023-11-10T21:12:12Z", y: 74 },
   { x: "2023-11-10T21:12:58Z", y: 70 },
@@ -19001,7 +19003,6 @@ var heartRate = [
   x: parseISO(entry.x),
   y: entry.y
 }));
-console.log(heartRate);
 new Chart(left, {
   type: "line",
   data: {
@@ -19038,6 +19039,44 @@ new Chart(aux, {
   type: "line",
   data: {
     datasets: [...auxData()]
+  },
+  options: {
+    scales: {
+      x: {
+        type: "timeseries",
+        time: {
+          unit: "second"
+        }
+      }
+    }
+  }
+});
+new Chart(imu, {
+  type: "line",
+  data: {
+    datasets: [
+      {
+        label: `Accelerometer X`,
+        data: imuData.map((entry) => ({
+          x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
+          y: entry.v[0]
+        }))
+      },
+      {
+        label: `Accelerometer Y`,
+        data: imuData.map((entry) => ({
+          x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
+          y: entry.v[1]
+        }))
+      },
+      {
+        label: `Accelerometer Z`,
+        data: imuData.map((entry) => ({
+          x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
+          y: entry.v[2]
+        }))
+      }
+    ]
   },
   options: {
     scales: {
