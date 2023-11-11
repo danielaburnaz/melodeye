@@ -18950,7 +18950,99 @@ adapters._date.override({
 });
 
 // index.ts
-var eyeData = function(eye, name) {
+async function render(id) {
+  const afe = await fetch(`/${id}/AFE.json`).then((res) => res.json());
+  const imuData = await fetch(`/${id}/IMU.json`).then((res) => res.json());
+  charts.forEach((chart3) => chart3.destroy());
+  charts = [];
+  charts.push(new Chart(left, {
+    type: "line",
+    data: {
+      datasets: [...eyeData(afe, 0, "Left")]
+    },
+    options: {
+      scales: {
+        x: {
+          type: "timeseries",
+          time: {
+            unit: "second"
+          }
+        }
+      }
+    }
+  }));
+  charts.push(new Chart(right, {
+    type: "line",
+    data: {
+      datasets: [...eyeData(afe, 1, "Right")]
+    },
+    options: {
+      scales: {
+        x: {
+          type: "timeseries",
+          time: {
+            unit: "second"
+          }
+        }
+      }
+    }
+  }));
+  charts.push(new Chart(aux, {
+    type: "line",
+    data: {
+      datasets: [...auxData(afe)]
+    },
+    options: {
+      scales: {
+        x: {
+          type: "timeseries",
+          time: {
+            unit: "second"
+          }
+        }
+      }
+    }
+  }));
+  charts.push(new Chart(imu, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: `Accelerometer X`,
+          data: imuData.map((entry) => ({
+            x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
+            y: entry.v[0]
+          }))
+        },
+        {
+          label: `Accelerometer Y`,
+          data: imuData.map((entry) => ({
+            x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
+            y: entry.v[1]
+          }))
+        },
+        {
+          label: `Accelerometer Z`,
+          data: imuData.map((entry) => ({
+            x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
+            y: entry.v[2]
+          }))
+        }
+      ]
+    },
+    options: {
+      scales: {
+        x: {
+          type: "timeseries",
+          time: {
+            unit: "second"
+          }
+        }
+      }
+    }
+  }));
+}
+var eyeData = function(afe, eye, name) {
   return [0, 1, 2, 3, 4, 5].map((i2) => {
     return {
       label: `${name} eye #${i2}`,
@@ -18961,7 +19053,7 @@ var eyeData = function(eye, name) {
     };
   });
 };
-var auxData = function() {
+var auxData = function(afe) {
   return [0, 1, 2, 3].map((i2) => {
     return {
       label: `Aux #${i2}`,
@@ -18977,8 +19069,7 @@ var right = document.getElementById("rightEye");
 var aux = document.getElementById("aux");
 var hr = document.getElementById("heartRate");
 var imu = document.getElementById("imu");
-var afe = await fetch("/2/AFE.json").then((res) => res.json());
-var imuData = await fetch("/2/IMU.json").then((res) => res.json());
+var charts = [];
 var heartRate = [
   { x: "2023-11-10T21:12:12Z", y: 74 },
   { x: "2023-11-10T21:12:58Z", y: 70 },
@@ -19003,92 +19094,6 @@ var heartRate = [
   x: parseISO(entry.x),
   y: entry.y
 }));
-new Chart(left, {
-  type: "line",
-  data: {
-    datasets: [...eyeData(0, "Left")]
-  },
-  options: {
-    scales: {
-      x: {
-        type: "timeseries",
-        time: {
-          unit: "second"
-        }
-      }
-    }
-  }
-});
-new Chart(right, {
-  type: "line",
-  data: {
-    datasets: [...eyeData(1, "Right")]
-  },
-  options: {
-    scales: {
-      x: {
-        type: "timeseries",
-        time: {
-          unit: "second"
-        }
-      }
-    }
-  }
-});
-new Chart(aux, {
-  type: "line",
-  data: {
-    datasets: [...auxData()]
-  },
-  options: {
-    scales: {
-      x: {
-        type: "timeseries",
-        time: {
-          unit: "second"
-        }
-      }
-    }
-  }
-});
-new Chart(imu, {
-  type: "line",
-  data: {
-    datasets: [
-      {
-        label: `Accelerometer X`,
-        data: imuData.map((entry) => ({
-          x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
-          y: entry.v[0]
-        }))
-      },
-      {
-        label: `Accelerometer Y`,
-        data: imuData.map((entry) => ({
-          x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
-          y: entry.v[1]
-        }))
-      },
-      {
-        label: `Accelerometer Z`,
-        data: imuData.map((entry) => ({
-          x: fromUnixTime(Math.floor(entry.i[1] / 1e6)),
-          y: entry.v[2]
-        }))
-      }
-    ]
-  },
-  options: {
-    scales: {
-      x: {
-        type: "timeseries",
-        time: {
-          unit: "second"
-        }
-      }
-    }
-  }
-});
 new Chart(hr, {
   type: "line",
   data: {
@@ -19110,3 +19115,7 @@ new Chart(hr, {
     }
   }
 });
+addEventListener("hashchange", (event) => {
+  render(location.hash.slice(1));
+});
+render("1");
