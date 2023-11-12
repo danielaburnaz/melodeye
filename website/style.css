@@ -1,0 +1,211 @@
+body{
+    font-family: 'Nunito Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    /* background-image: linear-gradient(#1d1237,#0E0720); */
+
+    background-color: #0E0720;
+    height: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.phone {
+    width: 390px;
+    height: max-content;
+    background-image: linear-gradient(#F59B0D, #ED5F10);
+    border: #0E0720;
+    border-radius: 25px;
+}
+
+nav h1{
+    color: white!important;
+    font-weight: 800;
+
+}
+
+.nav-color{
+    background-color: #F59B0D;
+    border: #F59B0D;
+    border-radius: 25px;
+}
+
+.container{
+    display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.container-web{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.box-container{
+    width: 360px;
+    height: 100%;
+    padding-bottom: 20px;
+
+}
+
+.box-container .rectangle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    width: 360px;
+    height: 100%;
+    background-color: #ffffff33;
+    border-radius: 10px;
+    backdrop-filter: blur(22.4px) brightness(100%);
+    -webkit-backdrop-filter: blur(22.4px) brightness(100%);
+    z-index: 0;
+    padding-bottom: 20px;
+  }
+
+
+.box {
+    position: relative;
+    width: 360px;
+    height: 428px;
+  }
+  
+  .box .group {
+    /* position: fixed; */
+    width: 360px;
+    height: 428px;
+    background-color: #ffffff33;
+    border-radius: 10px;
+    backdrop-filter: blur(22.4px) brightness(100%);
+    -webkit-backdrop-filter: blur(22.4px) brightness(100%);
+  }
+  
+  .box .div {
+    position: absolute;
+    width: 306px;
+    height: 236px;
+    top: 96px;
+    left: 28px;
+  }
+  
+  .box .text-wrapper {
+    position: absolute;
+    width: 276px;
+    top: 48px;
+    left: 0;
+    font-family: "Poppins-Bold", Helvetica;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 50px;
+    letter-spacing: 0;
+    line-height: 45px;
+  }
+  
+  .box .text-wrapper-2 {
+    position: absolute;
+    width: 261px;
+    top: 0;
+    left: 0;
+    font-family: "Poppins-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 25px;
+    letter-spacing: 0;
+    line-height: 22.5px;
+  }
+  
+  .box .text-wrapper-3 {
+    position: absolute;
+    width: 300px;
+    top: 204px;
+    left: 0;
+    font-family: "Poppins-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 25px;
+    letter-spacing: 0;
+    line-height: 22.5px;
+  }
+  
+  .box .ellipse {
+    left: 152px;
+    background-color: #ffffff;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 396px;
+    border-radius: 6px;
+  }
+  
+  .box .ellipse-2 {
+    left: 174px;
+    background-color: #ffffff66;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 396px;
+    border-radius: 6px;
+  }
+  
+  .box .ellipse-3 {
+    left: 196px;
+    background-color: #ffffff66;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 396px;
+    border-radius: 6px;
+  }
+  
+
+.spotify-player{
+    width: 360px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.ai-box {
+    width: 320px;
+    height: 78px;
+}
+  
+  .ai-box .group {
+    position: relative;
+    width: 320px;
+    height: 78px;
+  }
+  
+  .ai-box .overlap-group {
+    position: relative;
+    width: 320px;
+    height: 78px;
+    background-color: #ffffff33;
+    border-radius: 6px;
+    backdrop-filter: blur(22.4px) brightness(100%);
+    -webkit-backdrop-filter: blur(22.4px) brightness(100%);
+  }
+  
+  .ai-box .image {
+    position: absolute;
+    width: 62px;
+    height: 62px;
+    top: 8px;
+    left: 8px;
+  }
+  
+  .ai-box .AI-generated-sounds {
+    position: absolute;
+    top: 24px;
+    left: 78px;
+    font-family: "Poppins-Medium", Helvetica;
+    font-weight: 500;
+    color: #ffffff;
+    font-size: 15px;
+    letter-spacing: 0;
+    line-height: 15px;
+  }
+  
+
